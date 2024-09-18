@@ -17,7 +17,7 @@ const Challenge = ({ description, correctAnswer, onComplete }) => {
 
   return (
     <motion.div
-      className="challenge mt-8"
+      className="challenge mt-8 bg-gray-800 p-6 rounded-lg shadow-lg"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -30,13 +30,25 @@ const Challenge = ({ description, correctAnswer, onComplete }) => {
           value={userAnswer}
           onChange={(e) => setUserAnswer(e.target.value)}
           placeholder="Enter your answer"
-          className="w-full p-2 bg-gray-800 text-ghostly-white rounded"
+          className="w-full p-2 bg-gray-700 text-white rounded"
         />
-        <button type="submit" className="bg-eerie-green text-haunted-black px-4 py-2 rounded">
+        <button 
+          type="submit" 
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
           Submit
         </button>
       </form>
-      {feedback && <p className="mt-4 text-eerie-green">{feedback}</p>}
+      {feedback && (
+        <motion.p 
+          className={`mt-4 ${feedback.includes('Correct') ? 'text-green-400' : 'text-red-400'}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {feedback}
+        </motion.p>
+      )}
     </motion.div>
   );
 };
