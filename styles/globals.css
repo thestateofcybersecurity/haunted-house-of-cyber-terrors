@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-haunted-black text-ghostly-white;
+}
+
+.room {
+  @apply min-h-screen flex flex-col items-center justify-center p-4;
+}
+
+.challenge {
+  @apply bg-haunted-black border border-eerie-green p-4 rounded-lg shadow-lg;
+}
