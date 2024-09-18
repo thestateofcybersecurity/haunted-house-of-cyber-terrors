@@ -24,9 +24,25 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const handleCollectItem = async (item) => {
+    if (!userProgress.collectedItems.some(i => i.name === item.name)) {
+      const newProgress = {
+        ...userProgress,
+        collectedItems: [...userProgress.collectedItems, item],
+      };
+      setUserProgress(newProgress);
+
+      await fetch('/api/saveprogress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: 'user123', progress: newProgress }),
+      });
+    }
+  };
+
+  const handleRoomComplete = async (roomId) => {
     const newProgress = {
       ...userProgress,
-      collectedItems: [...userProgress.collectedItems, item],
+      currentRoom: roomId + 1,
     };
     setUserProgress(newProgress);
 
@@ -35,13 +51,19 @@ function MyApp({ Component, pageProps }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: 'user123', progress: newProgress }),
     });
-  };
 
-  const handleRoomComplete = async (roomId) => {
     if (roomId < 30) {
       router.push(`/room/${roomId + 1}`);
     } else {
-      router.push('/completion');
+      // Reset the game
+      const resetProgress = { currentRoom: 0, collectedItems: [] };
+      setUserProgress(resetProgress);
+      await fetch('/api/saveprogress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: 'user123', progress: resetProgress }),
+      });
+      router.push('/');
     }
   };
 
@@ -51,19 +73,15 @@ function MyApp({ Component, pageProps }) {
         <h1 className="text-2xl font-bold">The Haunted House of Cyber Terrors</h1>
         <Progress currentRoom={userProgress.currentRoom} totalRooms={31} />
       </header>
-      <main className="container mx-auto p-4 flex">
-        <div className="w-3/4 pr-4">
-          <Component 
-            {...pageProps} 
-            userProgress={userProgress}
-            onCollectItem={handleCollectItem}
-            onRoomComplete={handleRoomComplete}
-          />
-        </div>
-        <div className="w-1/4">
-          <Inventory items={userProgress.collectedItems} />
-        </div>
+      <main className="container mx-auto p-4">
+        <Component 
+          {...pageProps} 
+          userProgress={userProgress}
+          onCollectItem={handleCollectItem}
+          onRoomComplete={handleRoomComplete}
+        />
       </main>
+      <Inventory items={userProgress.collectedItems} />
     </div>
   );
 }
