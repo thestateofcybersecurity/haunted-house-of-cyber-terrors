@@ -8,7 +8,7 @@ const Challenge = ({ description, correctAnswer, onComplete }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-      setFeedback('Correct! You've successfully defended against this threat.');
+      setFeedback('Correct! You have successfully defended against this threat.');
       onComplete();
     } else {
       setFeedback('Not quite. Try again!');
