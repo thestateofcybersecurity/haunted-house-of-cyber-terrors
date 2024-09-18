@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Inventory = ({ items }) => {
   const [selectedItem, setSelectedItem] = useState(null);
+
+  const toggleItemDetails = (item) => {
+    setSelectedItem(selectedItem && selectedItem.name === item.name ? null : item);
+  };
 
   return (
     <div className="inventory fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
@@ -13,7 +17,7 @@ const Inventory = ({ items }) => {
             key={index} 
             className="inventory-item cursor-pointer"
             whileHover={{ scale: 1.1 }}
-            onClick={() => setSelectedItem(item)}
+            onClick={() => toggleItemDetails(item)}
           >
             <Image 
               src={`/images/items/${item.image}`}
@@ -24,12 +28,19 @@ const Inventory = ({ items }) => {
           </motion.div>
         ))}
       </div>
-      {selectedItem && (
-        <div className="item-details mt-4 text-center">
-          <h3 className="text-lg font-bold">{selectedItem.name}</h3>
-          <p className="text-sm">{selectedItem.description}</p>
-        </div>
-      )}
+      <AnimatePresence>
+        {selectedItem && (
+          <motion.div 
+            className="item-details mt-4 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+          >
+            <h3 className="text-lg font-bold">{selectedItem.name}</h3>
+            <p className="text-sm">{selectedItem.description}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
