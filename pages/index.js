@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
-import Introduction from '../components/rooms/Introduction';
+import Room from '../components/Room';
+import { rooms } from '../lib/rooms';
 
 export default function Home() {
   const [userProgress, setUserProgress] = useState({
     currentRoom: 0,
-    completedRooms: [],
-    score: 0,
+    collectedItems: [],
   });
+
+  const router = useRouter();
 
   useEffect(() => {
     // Fetch user progress from API
@@ -21,28 +24,51 @@ export default function Home() {
     fetchProgress();
   }, []);
 
-  const handleRoomCompletion = async () => {
+  const handleCollectItem = async (item) => {
+    if (!userProgress.collectedItems.some(i => i.name === item.name)) {
+      const newProgress = {
+        ...userProgress,
+        collectedItems: [...userProgress.collectedItems, item],
+      };
+      setUserProgress(newProgress);
+
+      await fetch('/api/saveprogress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: 'user123', progress: newProgress }),
+      });
+    }
+  };
+
+  const handleRoomComplete = async (roomId) => {
     const newProgress = {
       ...userProgress,
-      completedRooms: [...userProgress.completedRooms, 0],
-      currentRoom: 1,
-      score: userProgress.score + 10,
+      currentRoom: roomId + 1,
     };
     setUserProgress(newProgress);
 
-    // Save progress to API
     await fetch('/api/saveprogress', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: 'user123', progress: newProgress }),
     });
+
+    if (roomId < 30) {
+      router.push(`/room/${roomId + 1}`);
+    } else {
+      router.push('/completion');
+    }
   };
+
+  const introductionRoom = rooms[0];  // Assuming the first room in the array is the introduction
 
   return (
     <Layout userProgress={userProgress}>
-      <Introduction 
-        onComplete={handleRoomCompletion}
-        isCompleted={userProgress.completedRooms.includes(0)}
+      <Room 
+        roomData={introductionRoom}
+        onCollectItem={handleCollectItem}
+        onRoomComplete={handleRoomComplete}
+        collectedItems={userProgress.collectedItems}
       />
     </Layout>
   );
