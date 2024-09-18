@@ -1,23 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const Inventory = ({ items }) => {
+  const [selectedItem, setSelectedItem] = useState(null);
+
   return (
-    <div className="inventory bg-gray-800 p-4 rounded-lg">
-      <h3 className="text-xl font-bold mb-2">Inventory</h3>
-      <div className="flex flex-wrap gap-2">
+    <div className="inventory fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
+      <div className="flex justify-center space-x-4">
         {items.map((item, index) => (
-          <div key={index} className="inventory-item">
+          <motion.div 
+            key={index} 
+            className="inventory-item cursor-pointer"
+            whileHover={{ scale: 1.1 }}
+            onClick={() => setSelectedItem(item)}
+          >
             <Image 
               src={`/images/items/${item.image}`}
               alt={item.name}
-              width={30}
-              height={30}
+              width={40}
+              height={40}
             />
-            <p className="text-xs mt-1">{item.name}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
+      {selectedItem && (
+        <div className="item-details mt-4 text-center">
+          <h3 className="text-lg font-bold">{selectedItem.name}</h3>
+          <p className="text-sm">{selectedItem.description}</p>
+        </div>
+      )}
     </div>
   );
 };
