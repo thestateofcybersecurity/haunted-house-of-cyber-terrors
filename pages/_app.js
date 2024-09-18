@@ -68,12 +68,12 @@ function MyApp({ Component, pageProps }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <header className="bg-gray-800 p-4">
         <h1 className="text-2xl font-bold">The Haunted House of Cyber Terrors</h1>
         <Progress currentRoom={userProgress.currentRoom} totalRooms={31} />
       </header>
-      <main className="container mx-auto p-4">
+      <main className="flex-grow overflow-y-auto pb-24">
         <Component 
           {...pageProps} 
           userProgress={userProgress}
@@ -81,7 +81,9 @@ function MyApp({ Component, pageProps }) {
           onRoomComplete={handleRoomComplete}
         />
       </main>
-      <Inventory items={userProgress.collectedItems} />
+      <footer className="fixed bottom-0 left-0 right-0 bg-gray-800">
+        <Inventory items={userProgress.collectedItems} />
+      </footer>
     </div>
   );
 }
