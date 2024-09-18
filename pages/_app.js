@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Progress from '../components/Progress';
+import Inventory from '../components/Inventory';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
   const [userProgress, setUserProgress] = useState({
     currentRoom: 0,
-    completedRooms: [],
-    score: 0,
+    collectedItems: [],
   });
 
   const router = useRouter();
@@ -23,12 +23,10 @@ function MyApp({ Component, pageProps }) {
     fetchProgress();
   }, []);
 
-  const handleRoomCompletion = async (roomId) => {
+  const handleCollectItem = async (item) => {
     const newProgress = {
       ...userProgress,
-      completedRooms: [...userProgress.completedRooms, roomId],
-      currentRoom: roomId + 1,
-      score: userProgress.score + 10,
+      collectedItems: [...userProgress.collectedItems, item],
     };
     setUserProgress(newProgress);
 
@@ -37,7 +35,9 @@ function MyApp({ Component, pageProps }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: 'user123', progress: newProgress }),
     });
+  };
 
+  const handleRoomComplete = async (roomId) => {
     if (roomId < 30) {
       router.push(`/room/${roomId + 1}`);
     } else {
@@ -51,12 +51,18 @@ function MyApp({ Component, pageProps }) {
         <h1 className="text-2xl font-bold">The Haunted House of Cyber Terrors</h1>
         <Progress currentRoom={userProgress.currentRoom} totalRooms={31} />
       </header>
-      <main className="container mx-auto p-4">
-        <Component 
-          {...pageProps} 
-          userProgress={userProgress}
-          onRoomComplete={handleRoomCompletion}
-        />
+      <main className="container mx-auto p-4 flex">
+        <div className="w-3/4 pr-4">
+          <Component 
+            {...pageProps} 
+            userProgress={userProgress}
+            onCollectItem={handleCollectItem}
+            onRoomComplete={handleRoomComplete}
+          />
+        </div>
+        <div className="w-1/4">
+          <Inventory items={userProgress.collectedItems} />
+        </div>
       </main>
     </div>
   );
