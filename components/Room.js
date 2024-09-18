@@ -16,24 +16,25 @@ const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
   );
 
   return (
-    <div className="room bg-gray-900 text-white p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">{roomData.title}</h2>
-      <div className="relative w-full h-64 mb-4">
+    <div className="room relative min-h-screen bg-gray-900 text-white p-6">
+      <h2 className="text-3xl font-bold mb-4 text-center">{roomData.title}</h2>
+      <div className="relative w-full h-[calc(100vh-200px)] mb-4">
         <Image 
           src={`/images/day${roomData.day}.webp`}
           alt={roomData.title}
           layout="fill"
-          objectFit="cover"
+          objectFit="contain"
           className="rounded-lg"
         />
       </div>
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
+        className="text-center mb-4"
       >
         <p className="mb-4">{roomData.description}</p>
-        <div className="flex flex-wrap gap-4 mb-4">
+        <div className="flex flex-wrap justify-center gap-4 mb-4">
           {roomData.collectibleItems.map((item, index) => (
             <CollectibleItem
               key={index}
