@@ -16,9 +16,9 @@ const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
   );
 
   return (
-    <div className="room relative min-h-screen bg-gray-900 text-white p-6">
+    <div className="room relative min-h-screen bg-gray-900 text-white p-6 pb-32">
       <h2 className="text-3xl font-bold mb-4 text-center">{roomData.title}</h2>
-      <div className="relative w-full h-[calc(100vh-200px)] mb-4">
+      <div className="relative w-full h-[calc(100vh-300px)] mb-4">
         <Image 
           src={`/images/day${roomData.day}.webp`}
           alt={roomData.title}
