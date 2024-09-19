@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Room from '../components/Room';
 import { rooms } from '../lib/rooms';
 
-export default function Home({ gameState, inventory, onUseItem, onRoomComplete }) {
+export default function Home({ gameState, inventory, onUseItem, onRoomComplete, restartGame }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -22,6 +22,9 @@ export default function Home({ gameState, inventory, onUseItem, onRoomComplete }
       inventory={inventory}
       onUseItem={onUseItem}
       onRoomComplete={onRoomComplete}
+      restartGame={restartGame}
+      currentRoom={gameState.currentRoom}
+      rooms={rooms} // Add this line
     />
   );
 }
