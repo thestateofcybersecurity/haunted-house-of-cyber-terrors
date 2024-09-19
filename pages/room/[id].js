@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import Room from '../../components/Room';
 import { rooms } from '../../lib/rooms';
 
-export default function RoomPage({ userProgress, onCollectItem, onRoomComplete }) {
+export default function RoomPage({ inventory, onUseItem, onRoomComplete }) {
   const router = useRouter();
   const { id } = router.query;
 
@@ -10,12 +10,14 @@ export default function RoomPage({ userProgress, onCollectItem, onRoomComplete }
 
   if (!roomData) return <div>Room not found</div>;
 
+  console.log('RoomPage received inventory:', inventory);
+
   return (
     <Room 
       roomData={roomData}
-      onCollectItem={onCollectItem}
+      inventory={inventory}
+      onUseItem={onUseItem}
       onRoomComplete={onRoomComplete}
-      collectedItems={userProgress.collectedItems}
     />
   );
 }
