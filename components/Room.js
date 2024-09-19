@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import ItemBag from './ItemBag';
@@ -9,14 +9,6 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
   const [usedItem, setUsedItem] = useState(null);
   const [animationState, setAnimationState] = useState('initial');
 
-  useEffect(() => {
-    console.log('Room component received props:', {
-      roomData,
-      inventoryLength: inventory ? inventory.length : 'undefined',
-      inventoryItems: inventory
-    });
-  }, [roomData, inventory]);
-
   const handleUseItem = (item) => {
     const result = onUseItem(item, roomData);
     setMessage(result.message);
@@ -26,7 +18,7 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
 
     setTimeout(() => {
       setAnimationState('fadeOut');
-    }, 3000);
+    }, 5000);
   };
 
   const itemVariants = {
