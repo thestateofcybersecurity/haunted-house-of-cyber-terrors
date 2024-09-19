@@ -16,16 +16,6 @@ function MyApp({ Component, pageProps }) {
       if (storedState) {
         const parsedState = JSON.parse(storedState);
         console.log('Parsed stored state:', parsedState);
-        
-        // Ensure usedItems exists and is an array
-        parsedState.usedItems = parsedState.usedItems || [];
-        
-        // Always refill the inventory with all items not in usedItems
-        parsedState.inventory = allItems.filter(item => 
-          !parsedState.usedItems.includes(item.name)
-        );
-        
-        console.log('Updated state:', parsedState);
         setGameState(parsedState);
       } else {
         const initialState = {
@@ -44,11 +34,10 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   useEffect(() => {
-    if (gameState) {
-      console.log('Current game state:', gameState);
-      console.log('Current inventory:', gameState.inventory);
+    if (gameState && gameState.currentRoom === 0 && router.pathname !== '/') {
+      router.push('/');
     }
-  }, [gameState]);
+  }, [gameState, router]);
 
   const handleUseItem = (item, roomData) => {
     if (!gameState) return { success: false, message: "Game not initialized" };
@@ -106,6 +95,7 @@ function MyApp({ Component, pageProps }) {
 
   const componentProps = {
     ...pageProps,
+    gameState,
     inventory: gameState.inventory,
     onUseItem: handleUseItem,
     onRoomComplete: handleRoomComplete,
