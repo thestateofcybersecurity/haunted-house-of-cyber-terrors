@@ -93,6 +93,11 @@ function MyApp({ Component, pageProps }) {
     return <div>Loading...</div>; // Or a loading spinner
   }
 
+  console.log('Props being passed to Room component:', {
+    roomData: rooms[gameState.currentRoom],
+    inventory: gameState.inventory,
+  });
+
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white">
       <header className="bg-gradient-haunted p-4">
