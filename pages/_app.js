@@ -14,12 +14,21 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const fetchProgress = async () => {
-      const res = await fetch('/api/getprogress?userId=user123');
-      if (res.ok) {
-        const progress = await res.json();
-        setGameState(progress);
-      } else {
-        // If no progress, start with all items
+      try {
+        const res = await fetch('/api/getprogress?userId=user123');
+        if (res.ok) {
+          const progress = await res.json();
+          setGameState(progress);
+        } else {
+          // If no progress, start with all items
+          setGameState({
+            currentRoom: 0,
+            inventory: rooms.flatMap(room => room.collectibleItems),
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch progress:', error);
+        // Set default state in case of error
         setGameState({
           currentRoom: 0,
           inventory: rooms.flatMap(room => room.collectibleItems),
@@ -73,11 +82,15 @@ function MyApp({ Component, pageProps }) {
   };
 
   const saveProgress = async (progress) => {
-    await fetch('/api/saveprogress', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: 'user123', progress }),
-    });
+    try {
+      await fetch('/api/saveprogress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: 'user123', progress }),
+      });
+    } catch (error) {
+      console.error('Failed to save progress:', error);
+    }
   };
 
   return (
@@ -89,8 +102,7 @@ function MyApp({ Component, pageProps }) {
       <main className="flex-grow overflow-hidden">
         <Component 
           {...pageProps} 
-          roomData={rooms[gameState.currentRoom]}
-          inventory={gameState.inventory}
+          userProgress={gameState}
           onUseItem={handleUseItem}
           onRoomComplete={handleRoomComplete}
         />
