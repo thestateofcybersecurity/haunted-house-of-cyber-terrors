@@ -105,7 +105,7 @@ const Room = ({ roomData, onUseItem, onRoomComplete, restartGame }) => {
           {isLastRoom ? "Restart Game" : "Continue to Next Room"}
         </motion.button>
       )}
-      <ItemBag items={inventory} onUseItem={handleUseItem} />
+      <ItemBag items={gameState.inventory} onUseItem={handleUseItem} />
     </div>
   );
 };
