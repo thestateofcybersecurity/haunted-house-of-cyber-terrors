@@ -55,7 +55,6 @@ function MyApp({ Component, pageProps }) {
     if (roomId < 30) {
       router.push(`/room/${roomId + 1}`);
     } else {
-      // Reset the game
       const resetProgress = { currentRoom: 0, collectedItems: [] };
       setUserProgress(resetProgress);
       await fetch('/api/saveprogress', {
@@ -68,12 +67,12 @@ function MyApp({ Component, pageProps }) {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      <header className="bg-gray-800 p-4 sticky top-0 z-10">
-        <h1 className="text-2xl font-bold">The Haunted House of Cyber Terrors</h1>
+    <div className="flex flex-col h-screen bg-gray-900 text-white">
+      <header className="bg-gray-800 p-2">
+        <h1 className="text-xl font-bold">The Haunted House of Cyber Terrors</h1>
         <Progress currentRoom={userProgress.currentRoom} totalRooms={31} />
       </header>
-      <main className="flex-grow overflow-y-auto">
+      <main className="flex-grow overflow-hidden">
         <Component 
           {...pageProps} 
           userProgress={userProgress}
@@ -81,7 +80,7 @@ function MyApp({ Component, pageProps }) {
           onRoomComplete={handleRoomComplete}
         />
       </main>
-      <footer className="bg-gray-800 sticky bottom-0 z-10">
+      <footer className="bg-gray-800">
         <Inventory items={userProgress.collectedItems} />
       </footer>
     </div>
