@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Progress from '../components/Progress';
-import Inventory from '../components/Inventory';
-import '../styles/globals.css';
+import IntroductionPage from '../components/IntroductionPage';
+import { rooms } from '../lib/rooms';
+import { useItem } from '../utils/itemUsage';
 
 function MyApp({ Component, pageProps }) {
-  const [userProgress, setUserProgress] = useState({
+  const [gameState, setGameState] = useState({
+    started: false,
     currentRoom: 0,
-    collectedItems: [],
+    inventory: [],
   });
 
   const router = useRouter();
@@ -17,72 +19,78 @@ function MyApp({ Component, pageProps }) {
       const res = await fetch('/api/getprogress?userId=user123');
       if (res.ok) {
         const progress = await res.json();
-        setUserProgress(progress);
+        setGameState(progress);
       }
     };
     fetchProgress();
   }, []);
 
-  const handleCollectItem = async (item) => {
-    if (!userProgress.collectedItems.some(i => i.name === item.name)) {
-      const newProgress = {
-        ...userProgress,
-        collectedItems: [...userProgress.collectedItems, item],
-      };
-      setUserProgress(newProgress);
+  const handleStartGame = (selectedItems) => {
+    const newState = {
+      ...gameState,
+      started: true,
+      inventory: selectedItems,
+    };
+    setGameState(newState);
+    saveProgress(newState);
+  };
 
-      await fetch('/api/saveprogress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: 'user123', progress: newProgress }),
-      });
+  const handleUseItem = (item, room) => {
+    const result = useItem(item, room);
+    return result;
+  };
+
+  const handleRemoveItem = (item) => {
+    const newState = {
+      ...gameState,
+      inventory: gameState.inventory.filter(i => i.name !== item.name),
+    };
+    setGameState(newState);
+    saveProgress(newState);
+  };
+
+  const handleRoomComplete = (roomId) => {
+    const newState = {
+      ...gameState,
+      currentRoom: roomId + 1,
+    };
+    setGameState(newState);
+    saveProgress(newState);
+
+    if (roomId < rooms.length - 1) {
+      router.push(`/room/${roomId + 1}`);
+    } else {
+      router.push('/completion');
     }
   };
 
-  const handleRoomComplete = async (roomId) => {
-    const newProgress = {
-      ...userProgress,
-      currentRoom: roomId + 1,
-    };
-    setUserProgress(newProgress);
-
+  const saveProgress = async (progress) => {
     await fetch('/api/saveprogress', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: 'user123', progress: newProgress }),
+      body: JSON.stringify({ userId: 'user123', progress }),
     });
-
-    if (roomId < 30) {
-      router.push(`/room/${roomId + 1}`);
-    } else {
-      const resetProgress = { currentRoom: 0, collectedItems: [] };
-      setUserProgress(resetProgress);
-      await fetch('/api/saveprogress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: 'user123', progress: resetProgress }),
-      });
-      router.push('/');
-    }
   };
+
+  if (!gameState.started) {
+    return <IntroductionPage items={rooms.flatMap(room => room.collectibleItems)} onStart={handleStartGame} />;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white">
       <header className="bg-gray-800 p-2">
         <h1 className="text-xl font-bold">The Haunted House of Cyber Terrors</h1>
-        <Progress currentRoom={userProgress.currentRoom} totalRooms={31} />
+        <Progress currentRoom={gameState.currentRoom} totalRooms={rooms.length} />
       </header>
       <main className="flex-grow overflow-hidden">
         <Component 
           {...pageProps} 
-          userProgress={userProgress}
-          onCollectItem={handleCollectItem}
+          gameState={gameState}
+          onUseItem={handleUseItem}
+          onRemoveItem={handleRemoveItem}
           onRoomComplete={handleRoomComplete}
         />
       </main>
-      <footer className="bg-gray-800">
-        <Inventory items={userProgress.collectedItems} />
-      </footer>
     </div>
   );
 }
