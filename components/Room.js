@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import ItemBag from './ItemBag';
@@ -8,6 +8,14 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
   const [showContinue, setShowContinue] = useState(false);
   const [usedItem, setUsedItem] = useState(null);
   const [animationState, setAnimationState] = useState('initial');
+
+  useEffect(() => {
+    // Reset states when room changes
+    setMessage('');
+    setShowContinue(false);
+    setUsedItem(null);
+    setAnimationState('initial');
+  }, [roomData]);
 
   const handleUseItem = (item) => {
     const result = onUseItem(item, roomData);
@@ -90,7 +98,10 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mx-auto mt-4 border-glow"
-          onClick={() => onRoomComplete(roomData.id)}
+          onClick={() => {
+            onRoomComplete(roomData.id);
+            setShowContinue(false);
+          }}
         >
           Continue to Next Room
         </motion.button>
