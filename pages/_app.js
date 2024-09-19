@@ -7,7 +7,7 @@ import '../styles/globals.css';
 function MyApp({ Component, pageProps }) {
   const [gameState, setGameState] = useState({
     currentRoom: 0,
-    inventory: [],
+    inventory: rooms.flatMap(room => room.collectibleItems), // Load all items initially
   });
 
   const router = useRouter();
@@ -18,28 +18,20 @@ function MyApp({ Component, pageProps }) {
         const res = await fetch('/api/getprogress?userId=user123');
         if (res.ok) {
           const progress = await res.json();
-          setGameState(progress);
-        } else {
-          // If no progress, start with all items
-          setGameState({
-            currentRoom: 0,
-            inventory: rooms.flatMap(room => room.collectibleItems),
-          });
+          setGameState(prevState => ({
+            ...progress,
+            inventory: prevState.inventory, // Keep the full inventory
+          }));
         }
       } catch (error) {
         console.error('Failed to fetch progress:', error);
-        // Set default state in case of error
-        setGameState({
-          currentRoom: 0,
-          inventory: rooms.flatMap(room => room.collectibleItems),
-        });
       }
     };
     fetchProgress();
   }, []);
 
-  const handleUseItem = (item, room) => {
-    const correctItem = room.collectibleItems.find(i => i.name === item.name);
+  const handleUseItem = (item, roomData) => {
+    const correctItem = roomData.collectibleItems.find(i => i.name === item.name);
 
     if (correctItem) {
       const newInventory = gameState.inventory.filter(i => i.name !== item.name);
@@ -102,7 +94,8 @@ function MyApp({ Component, pageProps }) {
       <main className="flex-grow overflow-hidden">
         <Component 
           {...pageProps} 
-          userProgress={gameState}
+          roomData={rooms[gameState.currentRoom]}
+          inventory={gameState.inventory}
           onUseItem={handleUseItem}
           onRoomComplete={handleRoomComplete}
         />
