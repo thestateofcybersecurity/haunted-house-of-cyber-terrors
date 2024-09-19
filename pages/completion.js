@@ -1,7 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 const Completion = ({ restartGame }) => {
+  const router = useRouter();
+
+  const handleRestart = () => {
+    restartGame();
+    router.push('/');
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
       <motion.div
@@ -15,7 +23,7 @@ const Completion = ({ restartGame }) => {
           You've completed the Haunted House of Cyber Terrors and become a master of cybersecurity!
         </p>
         <button
-          onClick={restartGame}
+          onClick={handleRestart}
           className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
         >
           Start Again
