@@ -7,7 +7,6 @@ const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
   const [itemDescription, setItemDescription] = useState('');
 
   useEffect(() => {
-    // Clear item description when room changes
     setItemDescription('');
   }, [roomData]);
 
@@ -21,14 +20,14 @@ const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
   );
 
   const handleContinue = () => {
-    setItemDescription(''); // Clear description before moving to next room
+    setItemDescription('');
     onRoomComplete(roomData.id);
   };
 
   return (
-    <div className="room relative bg-gray-900 text-white p-6">
-      <h2 className="text-3xl font-bold mb-4 text-center">{roomData.title}</h2>
-      <div className="relative w-full h-[calc(100vh-400px)] mb-4">
+    <div className="flex flex-col h-full p-4">
+      <h2 className="text-2xl font-bold mb-2 text-center">{roomData.title}</h2>
+      <div className="flex-grow relative mb-2">
         <Image 
           src={`/images/day${roomData.day}.webp`}
           alt={roomData.title}
@@ -41,10 +40,10 @@ const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="text-center mb-4"
+        className="text-center"
       >
-        <p className="mb-4">{roomData.description}</p>
-        <div className="flex flex-wrap justify-center gap-4 mb-4">
+        <p className="mb-2 text-sm">{roomData.description}</p>
+        <div className="flex flex-wrap justify-center gap-2 mb-2">
           {roomData.collectibleItems.map((item, index) => (
             <CollectibleItem
               key={index}
@@ -55,11 +54,11 @@ const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
           ))}
         </div>
         {itemDescription && (
-          <p className="text-green-400 mt-4">{itemDescription}</p>
+          <p className="text-green-400 text-sm mt-2">{itemDescription}</p>
         )}
         {allItemsCollected && (
           <motion.button
-            className="mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+            className="mt-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-sm"
             onClick={handleContinue}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
