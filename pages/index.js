@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Room from '../components/Room';
-import { rooms } from '../lib/rooms';
+import { useGameContext } from '../lib/gameContext';
 
-export default function Home({ gameState, inventory, onUseItem, onRoomComplete, restartGame }) {
+export default function Home({ onUseItem, onRoomComplete, restartGame }) {
   const router = useRouter();
+  const { rooms, gameState } = useGameContext();
 
   useEffect(() => {
     if (gameState && gameState.currentRoom > 0) {
@@ -19,12 +20,9 @@ export default function Home({ gameState, inventory, onUseItem, onRoomComplete, 
   return (
     <Room 
       roomData={rooms[0]}
-      inventory={inventory}
       onUseItem={onUseItem}
       onRoomComplete={onRoomComplete}
       restartGame={restartGame}
-      currentRoom={gameState.currentRoom}
-      rooms={rooms} // Add this line
     />
   );
 }
