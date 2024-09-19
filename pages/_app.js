@@ -11,23 +11,30 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     const initializeGameState = () => {
       const storedState = localStorage.getItem('gameState');
+      const allItems = rooms.flatMap(room => room.collectibleItems);
+      
       if (storedState) {
         const parsedState = JSON.parse(storedState);
+        console.log('Stored state:', parsedState);
+        
         // Ensure usedItems exists and is an array
         parsedState.usedItems = parsedState.usedItems || [];
-        // Ensure the inventory is always full
-        const fullInventory = rooms.flatMap(room => room.collectibleItems);
-        parsedState.inventory = fullInventory.filter(item => 
+        
+        // Always refill the inventory with all items not in usedItems
+        parsedState.inventory = allItems.filter(item => 
           !parsedState.usedItems.includes(item.name)
         );
+        
+        console.log('Updated state:', parsedState);
         setGameState(parsedState);
       } else {
         const initialState = {
           currentRoom: 0,
-          inventory: rooms.flatMap(room => room.collectibleItems),
+          inventory: allItems,
           usedItems: [],
           completedRooms: [],
         };
+        console.log('Initial state:', initialState);
         setGameState(initialState);
         localStorage.setItem('gameState', JSON.stringify(initialState));
       }
@@ -35,6 +42,12 @@ function MyApp({ Component, pageProps }) {
 
     initializeGameState();
   }, []);
+
+  useEffect(() => {
+    if (gameState) {
+      console.log('Current game state:', gameState);
+    }
+  }, [gameState]);
 
   const handleUseItem = (item, roomData) => {
     if (!gameState) return { success: false, message: "Game not initialized" };
@@ -48,6 +61,7 @@ function MyApp({ Component, pageProps }) {
         inventory: gameState.inventory.filter(i => i.name !== item.name),
         completedRooms: [...gameState.completedRooms, roomData.id],
       };
+      console.log('New state after using item:', newState);
       setGameState(newState);
       localStorage.setItem('gameState', JSON.stringify(newState));
     }
@@ -62,6 +76,7 @@ function MyApp({ Component, pageProps }) {
       ...gameState,
       currentRoom: roomId + 1,
     };
+    console.log('New state after completing room:', newState);
     setGameState(newState);
     localStorage.setItem('gameState', JSON.stringify(newState));
 
