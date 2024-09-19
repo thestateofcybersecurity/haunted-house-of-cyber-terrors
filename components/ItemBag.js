@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ItemBag = ({ items = [], onUseItem }) => {
+const ItemBag = ({ items, onUseItem }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -57,28 +57,17 @@ const ItemBag = ({ items = [], onUseItem }) => {
                 </div>
               ))}
             </div>
-            <AnimatePresence>
-              {selectedItem && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  className="mt-4 bg-gray-800 p-2 rounded"
+            {selectedItem && (
+              <div className="mt-4">
+                <p className="text-sm text-green-200 mb-2">{selectedItem.description}</p>
+                <button
+                  onClick={handleUseItem}
+                  className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-sm w-full"
                 >
-                  <h4 className="font-bold text-purple-300">{selectedItem.name}</h4>
-                  <p className="text-green-200 text-sm mb-2">{selectedItem.description}</p>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleUseItem();
-                    }}
-                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-sm w-full"
-                  >
-                    Use Item
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  Use Item
+                </button>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
