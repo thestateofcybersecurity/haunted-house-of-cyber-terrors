@@ -3,22 +3,22 @@ import { useRouter } from 'next/router';
 import Room from '../components/Room';
 import { rooms } from '../lib/rooms';
 
-export default function Home({ userProgress, onCollectItem, onRoomComplete }) {
+export default function Home({ inventory, onUseItem, onRoomComplete, currentRoom = 0 }) {
   const router = useRouter();
-  const currentRoom = userProgress?.currentRoom || 0;
-  const inventory = userProgress?.inventory || [];
 
   useEffect(() => {
-    if (userProgress && userProgress.currentRoom > 0) {
-      router.push(`/room/${userProgress.currentRoom}`);
+    if (currentRoom > 0) {
+      router.push(`/room/${currentRoom}`);
     }
-  }, [userProgress, router]);
+  }, [currentRoom, router]);
+
+  console.log('Home component received props:', { inventory, currentRoom });
 
   return (
     <Room 
       roomData={rooms[currentRoom]}
       inventory={inventory}
-      onCollectItem={onCollectItem}
+      onUseItem={onUseItem}
       onRoomComplete={onRoomComplete}
     />
   );
