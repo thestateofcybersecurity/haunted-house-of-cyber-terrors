@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ItemBag = ({ items = [], onUseItem }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-
-  useEffect(() => {
-    console.log('ItemBag received items:', {
-      itemsLength: items.length,
-      itemsContent: items
-    });
-  }, [items]);
 
   const toggleBag = () => setIsOpen(!isOpen);
 
@@ -29,8 +22,6 @@ const ItemBag = ({ items = [], onUseItem }) => {
       setSelectedItem(null);
     }
   };
-
-  const itemsToDisplay = Array.isArray(items) ? items : [];
 
   return (
     <div className="fixed bottom-4 right-4">
@@ -53,7 +44,7 @@ const ItemBag = ({ items = [], onUseItem }) => {
               {items.map((item, index) => (
                 <div 
                   key={index} 
-                  className="cursor-pointer"
+                  className="cursor-pointer relative"
                   onClick={() => handleItemClick(item)}
                 >
                   <Image 
@@ -61,22 +52,25 @@ const ItemBag = ({ items = [], onUseItem }) => {
                     alt={item.name}
                     width={50}
                     height={50}
-                    className="rounded-full border-2 border-purple-300 hover:border-purple-500 transition-colors duration-200"
+                    className={`rounded-full border-2 ${selectedItem && selectedItem.name === item.name ? 'border-purple-500' : 'border-purple-300'} hover:border-purple-500 transition-colors duration-200`}
                   />
+                  {selectedItem && selectedItem.name === item.name && (
+                    <div className="absolute top-full left-0 w-full mt-2 bg-gray-800 p-2 rounded text-xs">
+                      <p className="text-green-200 mb-2">{item.description}</p>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleUseItem();
+                        }}
+                        className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-xs w-full"
+                      >
+                        Use Item
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
-            {selectedItem && (
-              <div className="mt-4">
-                <p className="text-sm text-green-200 mb-2 animate-flicker">{selectedItem.description}</p>
-                <button
-                  onClick={handleUseItem}
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-sm border-glow"
-                >
-                  Use Item
-                </button>
-              </div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
