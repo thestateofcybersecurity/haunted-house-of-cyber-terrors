@@ -10,8 +10,8 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
   const [animationState, setAnimationState] = useState('initial');
 
   useEffect(() => {
-    console.log('Room component received inventory:', inventory);
-  }, [inventory]);
+    console.log('Room component received props:', { roomData, inventory });
+  }, [roomData, inventory]);
 
   const handleUseItem = (item) => {
     const result = onUseItem(item, roomData);
