@@ -1,17 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/router';
 
-const Completion = () => {
-  const router = useRouter();
-
-  const handleRestart = () => {
-    // Clear the game state from localStorage
-    localStorage.removeItem('gameState');
-    // Redirect to the home page
-    router.push('/');
-  };
-
+const Completion = ({ restartGame }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
       <motion.div
@@ -25,7 +15,7 @@ const Completion = () => {
           You've completed the Haunted House of Cyber Terrors and become a master of cybersecurity!
         </p>
         <button
-          onClick={handleRestart}
+          onClick={restartGame}
           className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
         >
           Start Again
