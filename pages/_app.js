@@ -104,6 +104,7 @@ function MyApp({ Component, pageProps }) {
     onRoomComplete: handleRoomComplete,
     currentRoom: gameState.currentRoom,
     restartGame: restartGame,
+    rooms: rooms, // Add this line
   };
 
   console.log('Props being passed to Component:', componentProps);
