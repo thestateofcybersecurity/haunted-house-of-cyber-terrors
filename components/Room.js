@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import ItemBag from './ItemBag';
+import { useGameContext } from '../lib/gameContext';
 
-const Room = ({ roomData, inventory, onUseItem, onRoomComplete, restartGame, currentRoom }) => {
+const Room = ({ roomData, onUseItem, onRoomComplete, restartGame }) => {
+  const { rooms, gameState } = useGameContext();
   const [message, setMessage] = useState('');
   const [showContinue, setShowContinue] = useState(false);
   const [usedItem, setUsedItem] = useState(null);
@@ -21,7 +23,7 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete, restartGame, cur
     }, 5000);
   };
 
-  const isLastRoom = currentRoom === rooms.length - 1;
+  const isLastRoom = gameState.currentRoom === rooms.length - 1;
 
   const itemVariants = {
     initial: { scale: 0, opacity: 0 },
