@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
 import Room from '../../components/Room';
-import { rooms } from '../../lib/rooms';
+import { useGameContext } from '../../lib/gameContext';
 
-export default function RoomPage({ gameState, inventory, onUseItem, onRoomComplete, restartGame }) {
+export default function RoomPage({ onUseItem, onRoomComplete, restartGame }) {
   const router = useRouter();
   const { id } = router.query;
+  const { rooms, gameState } = useGameContext();
 
   if (!gameState) {
     return <div>Loading...</div>;
@@ -21,17 +22,12 @@ export default function RoomPage({ gameState, inventory, onUseItem, onRoomComple
 
   if (!roomData) return <div>Room not found</div>;
 
-  console.log('RoomPage received inventory:', inventory);
-
   return (
     <Room 
       roomData={roomData}
-      inventory={inventory}
       onUseItem={onUseItem}
       onRoomComplete={onRoomComplete}
       restartGame={restartGame}
-      currentRoom={gameState.currentRoom}
-      rooms={rooms} // Add this line
     />
   );
 }
