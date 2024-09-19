@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Progress from '../components/Progress';
-import IntroductionPage from '../components/IntroductionPage';
 import { rooms } from '../lib/rooms';
-import { useItem } from '../utils/itemUsage';
+import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
   const [gameState, setGameState] = useState({
-    started: false,
     currentRoom: 0,
     inventory: [],
   });
@@ -20,33 +18,43 @@ function MyApp({ Component, pageProps }) {
       if (res.ok) {
         const progress = await res.json();
         setGameState(progress);
+      } else {
+        // If no progress, start with all items
+        setGameState({
+          currentRoom: 0,
+          inventory: rooms.flatMap(room => room.collectibleItems),
+        });
       }
     };
     fetchProgress();
   }, []);
 
-  const handleStartGame = (selectedItems) => {
-    const newState = {
-      ...gameState,
-      started: true,
-      inventory: selectedItems,
-    };
-    setGameState(newState);
-    saveProgress(newState);
-  };
-
   const handleUseItem = (item, room) => {
-    const result = useItem(item, room);
-    return result;
-  };
+    const correctItem = room.collectibleItems.find(i => i.name === item.name);
 
-  const handleRemoveItem = (item) => {
-    const newState = {
-      ...gameState,
-      inventory: gameState.inventory.filter(i => i.name !== item.name),
-    };
-    setGameState(newState);
-    saveProgress(newState);
+    if (correctItem) {
+      const newInventory = gameState.inventory.filter(i => i.name !== item.name);
+      const newState = { ...gameState, inventory: newInventory };
+      setGameState(newState);
+      saveProgress(newState);
+      return {
+        success: true,
+        message: `You used ${item.name} successfully! ${correctItem.description}`
+      };
+    } else {
+      const spookyMessages = [
+        "The shadows seem to laugh at your mistake...",
+        "A chill runs down your spine as you realize your error.",
+        "The room grows colder, mocking your incorrect choice.",
+        "An eerie whisper tells you to try again...",
+        "The flickering lights seem to spell out 'WRONG CHOICE'."
+      ];
+      const randomMessage = spookyMessages[Math.floor(Math.random() * spookyMessages.length)];
+      return {
+        success: false,
+        message: `${randomMessage} The ${item.name} doesn't seem to work here.`
+      };
+    }
   };
 
   const handleRoomComplete = (roomId) => {
@@ -72,22 +80,18 @@ function MyApp({ Component, pageProps }) {
     });
   };
 
-  if (!gameState.started) {
-    return <IntroductionPage items={rooms.flatMap(room => room.collectibleItems)} onStart={handleStartGame} />;
-  }
-
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white">
-      <header className="bg-gray-800 p-2">
-        <h1 className="text-xl font-bold">The Haunted House of Cyber Terrors</h1>
+      <header className="bg-gray-800 p-4">
+        <h1 className="text-3xl font-bold mb-2 text-purple-300">The Haunted House of Cyber Terrors</h1>
         <Progress currentRoom={gameState.currentRoom} totalRooms={rooms.length} />
       </header>
       <main className="flex-grow overflow-hidden">
         <Component 
           {...pageProps} 
-          gameState={gameState}
+          roomData={rooms[gameState.currentRoom]}
+          inventory={gameState.inventory}
           onUseItem={handleUseItem}
-          onRemoveItem={handleRemoveItem}
           onRoomComplete={handleRoomComplete}
         />
       </main>
