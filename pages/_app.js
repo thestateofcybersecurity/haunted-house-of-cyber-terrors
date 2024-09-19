@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Progress from '../components/Progress';
 import { rooms } from '../lib/rooms';
+import { useItem } from '../utils/useItem';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
@@ -31,31 +32,16 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const handleUseItem = (item, roomData) => {
-    const correctItem = roomData.collectibleItems.find(i => i.name === item.name);
-
-    if (correctItem) {
+    const result = useItem(item, roomData);
+    
+    if (result.success) {
       const newInventory = gameState.inventory.filter(i => i.name !== item.name);
       const newState = { ...gameState, inventory: newInventory };
       setGameState(newState);
       saveProgress(newState);
-      return {
-        success: true,
-        message: `You used ${item.name} successfully! ${correctItem.description}`
-      };
-    } else {
-      const spookyMessages = [
-        "The shadows seem to laugh at your mistake...",
-        "A chill runs down your spine as you realize your error.",
-        "The room grows colder, mocking your incorrect choice.",
-        "An eerie whisper tells you to try again...",
-        "The flickering lights seem to spell out 'WRONG CHOICE'."
-      ];
-      const randomMessage = spookyMessages[Math.floor(Math.random() * spookyMessages.length)];
-      return {
-        success: false,
-        message: `${randomMessage} The ${item.name} doesn't seem to work here.`
-      };
     }
+
+    return result;
   };
 
   const handleRoomComplete = (roomId) => {
