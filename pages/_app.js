@@ -40,10 +40,6 @@ function MyApp({ Component, pageProps }) {
 
       if (currentPath === '/' && currentRoomId > 0) {
         router.push(`/room/${currentRoomId}`);
-      } else if (currentPath.startsWith('/room/') && currentRoomId >= rooms.length) {
-        router.push('/completion');
-      } else if (currentPath === '/completion' && currentRoomId < rooms.length) {
-        router.push(`/room/${currentRoomId}`);
       }
     }
   }, [gameState, router]);
@@ -81,8 +77,6 @@ function MyApp({ Component, pageProps }) {
 
     if (roomId < rooms.length - 1) {
       router.push(`/room/${roomId + 1}`);
-    } else {
-      router.push('/completion');
     }
   };
 
