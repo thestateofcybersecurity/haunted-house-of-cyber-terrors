@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ItemBag = ({ items, onUseItem }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  useEffect(() => {
+    console.log('Items in bag:', items);
+  }, [items]);
 
   const toggleBag = () => setIsOpen(!isOpen);
 
@@ -39,7 +43,7 @@ const ItemBag = ({ items, onUseItem }) => {
             exit={{ opacity: 0, y: 50 }}
             className="absolute bottom-16 right-0 w-64 bg-gradient-haunted rounded-lg shadow-xl p-4 border-glow"
           >
-            <h3 className="text-xl font-bold mb-2 text-purple-300 text-shadow-glow">Your Items</h3>
+            <h3 className="text-xl font-bold mb-2 text-purple-300 text-shadow-glow">Your Items ({items.length})</h3>
             <div className="grid grid-cols-3 gap-2">
               {items.map((item, index) => (
                 <div 
