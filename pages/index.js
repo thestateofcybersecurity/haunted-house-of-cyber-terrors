@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Room from '../components/Room';
 import { rooms } from '../lib/rooms';
 
-export default function Home({ inventory, onUseItem, onRoomComplete, currentRoom = 0 }) {
+export default function Home({ inventory, onUseItem, onRoomComplete, currentRoom }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -12,11 +12,9 @@ export default function Home({ inventory, onUseItem, onRoomComplete, currentRoom
     }
   }, [currentRoom, router]);
 
-  console.log('Home component received props:', { inventory, currentRoom });
-
   return (
     <Room 
-      roomData={rooms[currentRoom]}
+      roomData={rooms[0]}
       inventory={inventory}
       onUseItem={onUseItem}
       onRoomComplete={onRoomComplete}
