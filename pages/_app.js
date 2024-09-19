@@ -95,7 +95,8 @@ function MyApp({ Component, pageProps }) {
 
   console.log('Props being passed to Room component:', {
     roomData: rooms[gameState.currentRoom],
-    inventory: gameState.inventory,
+    inventoryLength: gameState.inventory ? gameState.inventory.length : 'undefined',
+    inventoryItems: gameState.inventory
   });
 
   return (
