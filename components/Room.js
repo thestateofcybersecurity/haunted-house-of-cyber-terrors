@@ -1,27 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import CollectibleItem from './CollectibleItem';
 
-const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
-  const [itemDescription, setItemDescription] = useState('');
+const Room = ({ roomData, inventory, onUseItem, onRemoveItem, onRoomComplete }) => {
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    setItemDescription('');
-  }, [roomData]);
-
-  const handleCollectItem = (item) => {
-    onCollectItem(item);
-    setItemDescription(item.description);
+  const handleUseItem = () => {
+    if (selectedItem) {
+      const result = onUseItem(selectedItem, roomData);
+      setMessage(result.message);
+      if (result.success) {
+        onRoomComplete(roomData.id);
+      }
+    }
   };
 
-  const allItemsCollected = roomData.collectibleItems.every(item => 
-    collectedItems.some(collectedItem => collectedItem.name === item.name)
-  );
-
-  const handleContinue = () => {
-    setItemDescription('');
-    onRoomComplete(roomData.id);
+  const handleRemoveItem = () => {
+    if (selectedItem) {
+      onRemoveItem(selectedItem);
+      setSelectedItem(null);
+    }
   };
 
   return (
@@ -36,38 +35,34 @@ const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
           className="rounded-lg"
         />
       </div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="text-center"
-      >
-        <p className="mb-2 text-sm">{roomData.description}</p>
-        <div className="flex flex-wrap justify-center gap-2 mb-2">
-          {roomData.collectibleItems.map((item, index) => (
-            <CollectibleItem
-              key={index}
-              item={item}
-              onCollect={() => handleCollectItem(item)}
-              isCollected={collectedItems.some(i => i.name === item.name)}
-            />
+      <p className="mb-2 text-sm">{roomData.description}</p>
+      {message && <p className="text-green-400 text-sm mb-2">{message}</p>}
+      <div className="flex justify-between">
+        <select
+          className="bg-gray-700 text-white p-2 rounded"
+          value={selectedItem ? selectedItem.name : ''}
+          onChange={(e) => setSelectedItem(inventory.find(item => item.name === e.target.value))}
+        >
+          <option value="">Select an item</option>
+          {inventory.map((item, index) => (
+            <option key={index} value={item.name}>{item.name}</option>
           ))}
-        </div>
-        {itemDescription && (
-          <p className="text-green-400 text-sm mt-2">{itemDescription}</p>
-        )}
-        {allItemsCollected && (
-          <motion.button
-            className="mt-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-sm"
-            onClick={handleContinue}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            Continue to Next Room
-          </motion.button>
-        )}
-      </motion.div>
+        </select>
+        <button
+          className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-sm"
+          onClick={handleUseItem}
+          disabled={!selectedItem}
+        >
+          Use Item
+        </button>
+        <button
+          className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm"
+          onClick={handleRemoveItem}
+          disabled={!selectedItem}
+        >
+          Remove Item
+        </button>
+      </div>
     </div>
   );
 };
