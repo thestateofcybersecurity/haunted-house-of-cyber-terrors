@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Progress from '../components/Progress';
 import { rooms } from '../lib/rooms';
 import { useItem } from '../utils/useItem';
 import '../styles/globals.css';
@@ -12,11 +11,18 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     const storedState = localStorage.getItem('gameState');
     if (storedState) {
-      setGameState(JSON.parse(storedState));
+      const parsedState = JSON.parse(storedState);
+      // Ensure the inventory is always full
+      const fullInventory = rooms.flatMap(room => room.collectibleItems);
+      parsedState.inventory = fullInventory.filter(item => 
+        !parsedState.usedItems.includes(item.name)
+      );
+      setGameState(parsedState);
     } else {
       const initialState = {
         currentRoom: 0,
         inventory: rooms.flatMap(room => room.collectibleItems),
+        usedItems: [],
         completedRooms: [],
       };
       setGameState(initialState);
@@ -30,9 +36,10 @@ function MyApp({ Component, pageProps }) {
     if (result.success) {
       const newState = {
         ...gameState,
-        inventory: gameState.inventory.filter(i => i.name !== item.name),
+        usedItems: [...gameState.usedItems, item.name],
         completedRooms: [...gameState.completedRooms, roomData.id],
       };
+      newState.inventory = newState.inventory.filter(i => i.name !== item.name);
       setGameState(newState);
       localStorage.setItem('gameState', JSON.stringify(newState));
     }
@@ -59,9 +66,8 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white">
-      <header className="bg-gray-800 p-4">
-        <h1 className="text-3xl font-bold mb-2 text-purple-300">The Haunted House of Cyber Terrors</h1>
-        <Progress currentRoom={gameState.currentRoom} totalRooms={rooms.length} />
+      <header className="bg-gradient-haunted p-4">
+        <h1 className="text-3xl font-bold mb-2 text-purple-300 text-shadow-glow">The Haunted House of Cyber Terrors</h1>
       </header>
       <main className="flex-grow overflow-hidden">
         <Component 
