@@ -35,21 +35,20 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
 
   return (
     <div className="relative flex flex-col h-full p-4 bg-gray-900 text-white">
-      <h2 className="text-3xl font-bold mb-4 text-center text-purple-300">{roomData.title}</h2>
-      <div className="flex-grow relative mb-4">
+      <h2 className="text-3xl font-bold mb-4 text-center text-purple-300 text-shadow-glow">{roomData.title}</h2>
+      <div className="flex-grow relative mb-4 border-glow rounded-lg overflow-hidden">
         <Image 
           src={`/images/day${roomData.day}.webp`}
           alt={roomData.title}
           layout="fill"
           objectFit="contain"
-          className="rounded-lg"
         />
       </div>
-      <div className="bg-gray-800 p-4 rounded-lg mb-4 max-w-2xl mx-auto">
+      <div className="bg-gradient-haunted p-4 rounded-lg mb-4 max-w-2xl mx-auto border-glow">
         <motion.p 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-lg text-green-200"
+          className="text-lg text-green-200 animate-flicker"
         >
           {roomData.description}
         </motion.p>
@@ -76,7 +75,7 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
       <AnimatePresence>
         {message && (
           <motion.div 
-            className="text-red-400 text-lg mb-4 text-center"
+            className="text-red-400 text-lg mb-4 text-center text-shadow-glow"
             variants={messageVariants}
             initial="initial"
             animate={animationState}
@@ -90,7 +89,7 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mx-auto mt-4"
+          className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mx-auto mt-4 border-glow"
           onClick={() => onRoomComplete(roomData.id)}
         >
           Continue to Next Room
