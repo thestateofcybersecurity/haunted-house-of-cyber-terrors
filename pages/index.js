@@ -5,20 +5,21 @@ import { rooms } from '../lib/rooms';
 
 export default function Home({ userProgress, onCollectItem, onRoomComplete }) {
   const router = useRouter();
-  const introductionRoom = rooms[0];
+  const currentRoom = userProgress?.currentRoom || 0;
+  const inventory = userProgress?.inventory || [];
 
   useEffect(() => {
-    if (userProgress.currentRoom > 0) {
+    if (userProgress && userProgress.currentRoom > 0) {
       router.push(`/room/${userProgress.currentRoom}`);
     }
-  }, [userProgress.currentRoom, router]);
+  }, [userProgress, router]);
 
   return (
     <Room 
-      roomData={introductionRoom}
+      roomData={rooms[currentRoom]}
+      inventory={inventory}
       onCollectItem={onCollectItem}
       onRoomComplete={onRoomComplete}
-      collectedItems={userProgress.collectedItems}
     />
   );
 }
