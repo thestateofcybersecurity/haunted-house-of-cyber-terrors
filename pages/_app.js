@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { GameContext } from '../lib/gameContext';
 import { rooms } from '../lib/rooms';
 import { useItem } from '../utils/useItem';
 import '../styles/globals.css';
@@ -96,28 +97,22 @@ function MyApp({ Component, pageProps }) {
     return <div>Loading...</div>;
   }
 
-  const componentProps = {
-    ...pageProps,
-    gameState,
-    inventory: gameState.inventory,
-    onUseItem: handleUseItem,
-    onRoomComplete: handleRoomComplete,
-    currentRoom: gameState.currentRoom,
-    restartGame: restartGame,
-    rooms: rooms, // Add this line
-  };
-
-  console.log('Props being passed to Component:', componentProps);
-
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-white">
-      <header className="bg-gradient-haunted p-4">
-        <h1 className="text-3xl font-bold mb-2 text-purple-300 text-shadow-glow">The Haunted House of Cyber Terrors</h1>
-      </header>
-      <main className="flex-grow overflow-hidden">
-        <Component {...componentProps} />
-      </main>
-    </div>
+    <GameContext.Provider value={{ rooms, gameState, setGameState }}>
+      <div className="flex flex-col h-screen bg-gray-900 text-white">
+        <header className="bg-gradient-haunted p-4">
+          <h1 className="text-3xl font-bold mb-2 text-purple-300 text-shadow-glow">The Haunted House of Cyber Terrors</h1>
+        </header>
+        <main className="flex-grow overflow-hidden">
+          <Component 
+            {...pageProps} 
+            onUseItem={handleUseItem}
+            onRoomComplete={handleRoomComplete}
+            restartGame={restartGame}
+          />
+        </main>
+      </div>
+    </GameContext.Provider>
   );
 }
 
