@@ -12,7 +12,6 @@ function MyApp({ Component, pageProps }) {
     const initializeGameState = () => {
       const storedState = localStorage.getItem('gameState');
       const allItems = rooms.flatMap(room => room.collectibleItems);
-      console.log('All items:', allItems);
       
       if (storedState) {
         const parsedState = JSON.parse(storedState);
@@ -93,11 +92,15 @@ function MyApp({ Component, pageProps }) {
     return <div>Loading...</div>; // Or a loading spinner
   }
 
-  console.log('Props being passed to Room component:', {
+  const componentProps = {
+    ...pageProps,
+    inventory: gameState.inventory,
+    onUseItem: handleUseItem,
+    onRoomComplete: handleRoomComplete,
     roomData: rooms[gameState.currentRoom],
-    inventoryLength: gameState.inventory ? gameState.inventory.length : 'undefined',
-    inventoryItems: gameState.inventory
-  });
+  };
+
+  console.log('Props being passed to Component:', componentProps);
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white">
@@ -105,13 +108,7 @@ function MyApp({ Component, pageProps }) {
         <h1 className="text-3xl font-bold mb-2 text-purple-300 text-shadow-glow">The Haunted House of Cyber Terrors</h1>
       </header>
       <main className="flex-grow overflow-hidden">
-        <Component 
-          {...pageProps} 
-          roomData={rooms[gameState.currentRoom]}
-          inventory={gameState.inventory}
-          onUseItem={handleUseItem}
-          onRoomComplete={handleRoomComplete}
-        />
+        <Component {...componentProps} />
       </main>
     </div>
   );
