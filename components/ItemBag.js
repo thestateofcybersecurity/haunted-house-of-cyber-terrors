@@ -7,7 +7,7 @@ const ItemBag = ({ items, onUseItem }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
-    console.log('Items in bag:', items);
+    console.log('ItemBag received items:', items);
   }, [items]);
 
   const toggleBag = () => setIsOpen(!isOpen);
@@ -27,6 +27,8 @@ const ItemBag = ({ items, onUseItem }) => {
     }
   };
 
+  const itemsToDisplay = Array.isArray(items) ? items : [];
+
   return (
     <div className="fixed bottom-4 right-4">
       <button 
@@ -43,9 +45,9 @@ const ItemBag = ({ items, onUseItem }) => {
             exit={{ opacity: 0, y: 50 }}
             className="absolute bottom-16 right-0 w-64 bg-gradient-haunted rounded-lg shadow-xl p-4 border-glow"
           >
-            <h3 className="text-xl font-bold mb-2 text-purple-300 text-shadow-glow">Your Items ({items.length})</h3>
+            <h3 className="text-xl font-bold mb-2 text-purple-300 text-shadow-glow">Your Items ({itemsToDisplay.length})</h3>
             <div className="grid grid-cols-3 gap-2">
-              {items.map((item, index) => (
+              {itemsToDisplay.map((item, index) => (
                 <div 
                   key={index} 
                   className="cursor-pointer"
