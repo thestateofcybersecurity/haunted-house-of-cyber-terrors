@@ -27,13 +27,6 @@ function MyApp({ Component, pageProps }) {
         
         console.log('Updated state:', parsedState);
         setGameState(parsedState);
-
-        // Redirect to the correct room
-        if (parsedState.currentRoom < rooms.length) {
-          router.push(`/room/${parsedState.currentRoom}`);
-        } else {
-          router.push('/completion');
-        }
       } else {
         const initialState = {
           currentRoom: 0,
@@ -44,7 +37,6 @@ function MyApp({ Component, pageProps }) {
         console.log('Initial state:', initialState);
         setGameState(initialState);
         localStorage.setItem('gameState', JSON.stringify(initialState));
-        router.push('/'); // Redirect to the first room
       }
     };
 
@@ -96,6 +88,18 @@ function MyApp({ Component, pageProps }) {
     }
   };
 
+  const restartGame = () => {
+    const initialState = {
+      currentRoom: 0,
+      inventory: rooms.flatMap(room => room.collectibleItems),
+      usedItems: [],
+      completedRooms: [],
+    };
+    setGameState(initialState);
+    localStorage.setItem('gameState', JSON.stringify(initialState));
+    router.push('/');
+  };
+
   if (!gameState) {
     return <div>Loading...</div>; // Or a loading spinner
   }
@@ -106,6 +110,7 @@ function MyApp({ Component, pageProps }) {
     onUseItem: handleUseItem,
     onRoomComplete: handleRoomComplete,
     currentRoom: gameState.currentRoom,
+    restartGame: restartGame,
   };
 
   console.log('Props being passed to Component:', componentProps);
