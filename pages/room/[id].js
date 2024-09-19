@@ -31,6 +31,7 @@ export default function RoomPage({ gameState, inventory, onUseItem, onRoomComple
       onRoomComplete={onRoomComplete}
       restartGame={restartGame}
       currentRoom={gameState.currentRoom}
+      rooms={rooms} // Add this line
     />
   );
 }
