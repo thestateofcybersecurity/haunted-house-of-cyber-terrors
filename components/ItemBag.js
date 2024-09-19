@@ -7,7 +7,10 @@ const ItemBag = ({ items = [], onUseItem }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
-    console.log('ItemBag received items:', items);
+    console.log('ItemBag received items:', {
+      itemsLength: items.length,
+      itemsContent: items
+    });
   }, [items]);
 
   const toggleBag = () => setIsOpen(!isOpen);
