@@ -12,10 +12,11 @@ function MyApp({ Component, pageProps }) {
     const initializeGameState = () => {
       const storedState = localStorage.getItem('gameState');
       const allItems = rooms.flatMap(room => room.collectibleItems);
+      console.log('All items:', allItems);
       
       if (storedState) {
         const parsedState = JSON.parse(storedState);
-        console.log('Stored state:', parsedState);
+        console.log('Parsed stored state:', parsedState);
         
         // Ensure usedItems exists and is an array
         parsedState.usedItems = parsedState.usedItems || [];
@@ -46,6 +47,7 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if (gameState) {
       console.log('Current game state:', gameState);
+      console.log('Current inventory:', gameState.inventory);
     }
   }, [gameState]);
 
