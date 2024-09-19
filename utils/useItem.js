@@ -1,23 +1,12 @@
 export const useItem = (item, room) => {
   const correctItem = room.collectibleItems.find(i => i.name === item.name);
 
-  // List of all items
-  const itemsList = [
-    "access-charm", "all-seeing-orb", "amulet", "backup-scroll", "barbed-wire", 
-    "barrier", "continuity-talisman", "contract", "endpoint-spellbook", 
-    "exorcism-kit", "flame-enhancer", "force-field", "fortification-kit", 
-    "garlic-wreath", "goggles", "guide", "holy-water", "knowledge-spell", 
-    "lantern", "legendary-sword", "lock", "map", "mirror", "patch-catcher", 
-    "policy-spell", "ritual-book", "scroll", "scythe", "silver-bullets", 
-    "silver-spoon", "spellbook", "sword", "vigilance-eye"
-  ];
-
   // Function to generate dynamic spooky messages
   const generateSpookyMessage = (itemName, roomName) => {
     const spookyPrefixes = [
       "The shadows deepen as", 
       "A chill runs down your spine when", 
-      "You hear a faint, eerie whisper saying", 
+      "You hear a faint, eerie whisper saying",
       "The room darkens and", 
       "A cold breeze sends shivers down your back as",
       "The floor creaks beneath you while", 
@@ -122,7 +111,7 @@ export const useItem = (item, room) => {
     const prefix = spookyPrefixes[Math.floor(Math.random() * spookyPrefixes.length)];
     const outcome = spookyOutcomes[Math.floor(Math.random() * spookyOutcomes.length)];
 
-    return `${prefix} the ${itemName} in ${roomTitle} ${outcome}`;
+    return `${prefix} the ${itemName} in ${roomName} ${outcome}`;
   };
 
   if (correctItem) {
