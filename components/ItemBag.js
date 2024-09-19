@@ -54,23 +54,31 @@ const ItemBag = ({ items = [], onUseItem }) => {
                     height={50}
                     className={`rounded-full border-2 ${selectedItem && selectedItem.name === item.name ? 'border-purple-500' : 'border-purple-300'} hover:border-purple-500 transition-colors duration-200`}
                   />
-                  {selectedItem && selectedItem.name === item.name && (
-                    <div className="absolute top-full left-0 w-full mt-2 bg-gray-800 p-2 rounded text-xs">
-                      <p className="text-green-200 mb-2">{item.description}</p>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUseItem();
-                        }}
-                        className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-xs w-full"
-                      >
-                        Use Item
-                      </button>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
+            <AnimatePresence>
+              {selectedItem && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  className="mt-4 bg-gray-800 p-2 rounded"
+                >
+                  <h4 className="font-bold text-purple-300">{selectedItem.name}</h4>
+                  <p className="text-green-200 text-sm mb-2">{selectedItem.description}</p>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleUseItem();
+                    }}
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-sm w-full"
+                  >
+                    Use Item
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
