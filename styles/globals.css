@@ -1,15 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  @apply bg-haunted-black text-ghostly-white;
+  font-family: 'Roboto', sans-serif;
+  background-color: #121212;
+  color: #ffffff;
 }
 
-.room {
-  @apply min-h-screen flex flex-col items-center justify-center p-4;
+h1, h2, h3 {
+  font-family: 'Creepster', cursive;
 }
 
-.challenge {
-  @apply bg-haunted-black border border-eerie-green p-4 rounded-lg shadow-lg;
+.bg-brown-600 {
+  background-color: #8B4513;
+}
+
+.bg-brown-700 {
+  background-color: #6B3E11;
+}
+
+.bg-brown-800 {
+  background-color: #4B2E0F;
+}
+
+.text-purple-300 {
+  color: #B794F4;
+}
+
+.text-green-200 {
+  color: #9AE6B4;
+}
+
+.text-red-400 {
+  color: #FC8181;
+}
+
+.shadow-spooky {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.rounded-spooky {
+  border-radius: 0.5rem 1rem 0.5rem 1rem;
 }
