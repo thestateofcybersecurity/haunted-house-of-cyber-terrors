@@ -15,11 +15,8 @@ const Completion = ({ userProgress }) => {
         <p className="text-xl mb-4">
           You've completed the Haunted House of Cyber Terrors and become a master of cybersecurity!
         </p>
-        <p className="text-2xl font-bold mb-8">
-          Your final score: {userProgress.score}
-        </p>
         <Link href="/">
-          <a className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <a className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
             Start Again
           </a>
         </Link>
