@@ -69,11 +69,11 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      <header className="bg-gray-800 p-4">
+      <header className="bg-gray-800 p-4 sticky top-0 z-10">
         <h1 className="text-2xl font-bold">The Haunted House of Cyber Terrors</h1>
         <Progress currentRoom={userProgress.currentRoom} totalRooms={31} />
       </header>
-      <main className="flex-grow overflow-y-auto pb-24">
+      <main className="flex-grow overflow-y-auto">
         <Component 
           {...pageProps} 
           userProgress={userProgress}
@@ -81,7 +81,7 @@ function MyApp({ Component, pageProps }) {
           onRoomComplete={handleRoomComplete}
         />
       </main>
-      <footer className="fixed bottom-0 left-0 right-0 bg-gray-800">
+      <footer className="bg-gray-800 sticky bottom-0 z-10">
         <Inventory items={userProgress.collectedItems} />
       </footer>
     </div>
