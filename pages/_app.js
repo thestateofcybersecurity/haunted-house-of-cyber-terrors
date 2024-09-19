@@ -34,8 +34,17 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   useEffect(() => {
-    if (gameState && gameState.currentRoom === 0 && router.pathname !== '/') {
-      router.push('/');
+    if (gameState) {
+      const currentPath = router.pathname;
+      const currentRoomId = gameState.currentRoom;
+
+      if (currentPath === '/' && currentRoomId > 0) {
+        router.push(`/room/${currentRoomId}`);
+      } else if (currentPath.startsWith('/room/') && currentRoomId >= rooms.length) {
+        router.push('/completion');
+      } else if (currentPath === '/completion' && currentRoomId < rooms.length) {
+        router.push(`/room/${currentRoomId}`);
+      }
     }
   }, [gameState, router]);
 
@@ -90,7 +99,7 @@ function MyApp({ Component, pageProps }) {
   };
 
   if (!gameState) {
-    return <div>Loading...</div>; // Or a loading spinner
+    return <div>Loading...</div>;
   }
 
   const componentProps = {
