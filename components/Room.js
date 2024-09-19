@@ -1,17 +1,36 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import ItemBag from './ItemBag';
 
 const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
   const [message, setMessage] = useState('');
+  const [showContinue, setShowContinue] = useState(false);
+  const [usedItem, setUsedItem] = useState(null);
+  const [animationState, setAnimationState] = useState('initial');
 
   const handleUseItem = (item) => {
     const result = onUseItem(item, roomData);
     setMessage(result.message);
-    if (result.success) {
-      onRoomComplete(roomData.id);
-    }
+    setUsedItem(item);
+    setShowContinue(result.success);
+    setAnimationState('animate');
+
+    setTimeout(() => {
+      setAnimationState('fadeOut');
+    }, 3000);
+  };
+
+  const itemVariants = {
+    initial: { scale: 0, opacity: 0 },
+    animate: { scale: 1, opacity: 1, transition: { type: 'spring', stiffness: 300, damping: 20 } },
+    fadeOut: { opacity: 0, transition: { duration: 0.5 } },
+  };
+
+  const messageVariants = {
+    initial: { y: 50, opacity: 0 },
+    animate: { y: 0, opacity: 1, transition: { delay: 0.3 } },
+    fadeOut: { opacity: 0, transition: { duration: 0.5 } },
   };
 
   return (
@@ -26,21 +45,56 @@ const Room = ({ roomData, inventory, onUseItem, onRoomComplete }) => {
           className="rounded-lg"
         />
       </div>
-      <motion.p 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="mb-4 text-lg text-green-200"
-      >
-        {roomData.description}
-      </motion.p>
-      {message && (
+      <div className="bg-gray-800 p-4 rounded-lg mb-4 max-w-2xl mx-auto">
         <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-red-400 text-lg mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-lg text-green-200"
         >
-          {message}
+          {roomData.description}
         </motion.p>
+      </div>
+      <AnimatePresence>
+        {usedItem && (
+          <motion.div
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            variants={itemVariants}
+            initial="initial"
+            animate={animationState}
+            exit="fadeOut"
+          >
+            <Image 
+              src={`/images/items/${usedItem.image}`}
+              alt={usedItem.name}
+              width={100}
+              height={100}
+              className="mx-auto"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {message && (
+          <motion.div 
+            className="text-red-400 text-lg mb-4 text-center"
+            variants={messageVariants}
+            initial="initial"
+            animate={animationState}
+            exit="fadeOut"
+          >
+            <p>{message}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {showContinue && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mx-auto mt-4"
+          onClick={() => onRoomComplete(roomData.id)}
+        >
+          Continue to Next Room
+        </motion.button>
       )}
       <ItemBag items={inventory} onUseItem={handleUseItem} />
     </div>
