@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import CollectibleItem from './CollectibleItem';
 
 const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
   const [itemDescription, setItemDescription] = useState('');
+
+  useEffect(() => {
+    // Clear item description when room changes
+    setItemDescription('');
+  }, [roomData]);
 
   const handleCollectItem = (item) => {
     onCollectItem(item);
@@ -15,10 +20,15 @@ const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
     collectedItems.some(collectedItem => collectedItem.name === item.name)
   );
 
+  const handleContinue = () => {
+    setItemDescription(''); // Clear description before moving to next room
+    onRoomComplete(roomData.id);
+  };
+
   return (
-    <div className="room relative min-h-screen bg-gray-900 text-white p-6">
+    <div className="room relative bg-gray-900 text-white p-6">
       <h2 className="text-3xl font-bold mb-4 text-center">{roomData.title}</h2>
-      <div className="relative w-full h-[calc(100vh-300px)] mb-4">
+      <div className="relative w-full h-[calc(100vh-400px)] mb-4">
         <Image 
           src={`/images/day${roomData.day}.webp`}
           alt={roomData.title}
@@ -50,7 +60,7 @@ const Room = ({ roomData, onCollectItem, collectedItems, onRoomComplete }) => {
         {allItemsCollected && (
           <motion.button
             className="mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => onRoomComplete(roomData.id)}
+            onClick={handleContinue}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
