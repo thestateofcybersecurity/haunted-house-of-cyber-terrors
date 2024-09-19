@@ -7,10 +7,8 @@ export default function Home({ gameState, inventory, onUseItem, onRoomComplete }
   const router = useRouter();
 
   useEffect(() => {
-    if (gameState && gameState.currentRoom > 0 && gameState.currentRoom < rooms.length) {
+    if (gameState && gameState.currentRoom > 0) {
       router.push(`/room/${gameState.currentRoom}`);
-    } else if (gameState && gameState.currentRoom >= rooms.length) {
-      router.push('/completion');
     }
   }, [gameState, router]);
 
