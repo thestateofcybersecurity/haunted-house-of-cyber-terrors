@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import Room from '../../components/Room';
 import { rooms } from '../../lib/rooms';
 
-export default function RoomPage({ gameState, inventory, onUseItem, onRoomComplete }) {
+export default function RoomPage({ gameState, inventory, onUseItem, onRoomComplete, restartGame }) {
   const router = useRouter();
   const { id } = router.query;
 
@@ -29,6 +29,8 @@ export default function RoomPage({ gameState, inventory, onUseItem, onRoomComple
       inventory={inventory}
       onUseItem={onUseItem}
       onRoomComplete={onRoomComplete}
+      restartGame={restartGame}
+      currentRoom={gameState.currentRoom}
     />
   );
 }
